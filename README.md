@@ -25,19 +25,19 @@ The screening cascade applies sequential filters to balance computational cost a
 
 ##  Detailed Technical Phase Breakdown
 
-###  Phase 1: Library Curation & Substructure Filtering (`1_library_screening.ipynb`)
+###  Phase 1: Library Curation & Substructure Filtering (`import_library_screening.ipynb`)
 The objective of this stage is to eliminate undesirable compounds before committing heavy computing resources to 3D simulation.
 * **Lipinski’s Rule of Five (Ro5) Optimization:** Compounds were evaluated via **RDKit** to enforce optimal pharmacokinetic profiles. Filters applied: Molecular Weight ($300 \le \text{MW} \le 500 \text{ Da}$), $\text{LogP} < 5$, Hydrogen Bond Donors $\le 5$, and Acceptors $\le 10$.
 * **PAINS (Pan-Assay Interference Compounds) Exclusion:** Implemented a substructure alert system using Smarts-based structural keys to filter out reactive, promiscuous, or fluorescent artifacts that cause false-positive assays.
 * **Data Engineering Outcome:** Successfully pruned the initial noisy library down to **46,353 highly viable, lead-like structures**.
 
-###  Phase 2: Predictive QSAR Modeling & Hit Selection (`2_qsar_modeling.ipynb`)
+###  Phase 2: Predictive QSAR Modeling & Hit Selection (`qsar.ipynb`)
 Using bioactivity data extracted from ChEMBL for known Xanthine Oxidase modulators, a Quantitative Structure-Activity Relationship (QSAR) model was built.
 * **Molecular Featurization:** 2D chemical topologies were mapped into numerical matrices utilizing **Morgan Fingerprints** (Circular fingerprints with a radius of 2, vectorized into fixed 2048-bit bitvectors).
 * **Machine Learning Inferences:** Trained a robust **Random Forest Classifier** via Scikit-Learn. The model evaluates non-linear compound relationships to compute an active probability score (`Prob_QSAR`).
 * **Output:** Candidates were prioritized and ranked based on their probability of belonging to the biological active class.
 
-###  Phase 3: 3D Conformer Ensembles & Pharmacophore Alignment (`3_pharmacophore_search.ipynb`)
+###  Phase 3: 3D Conformer Ensembles & Pharmacophore Alignment (`pharmacophore.ipynb`)
 Molecules do not interact as flat 2D lines; their 3D spatial orientation is paramount to binding pocket compatibility.
 * **Stochastic Conformer Generation:** For the top QSAR candidates, RDKit's distance geometry algorithms generated multi-conformer ensembles to sample accessible low-energy spatial shapes.
 * **Open3DAlign (O3A) Core Integration:** Extracted structural alignments by maximizing steric and electronic overlaps against **Febuxostat** as a rigid 3D reference.
